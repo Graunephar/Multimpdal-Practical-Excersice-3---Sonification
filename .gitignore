@@ -1,4 +1,6 @@
 *.csv
+*.csv#
+
 
 
 # Created by https://www.gitignore.io/api/linux,macos,processing
