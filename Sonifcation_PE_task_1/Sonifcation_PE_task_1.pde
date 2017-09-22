@@ -19,7 +19,7 @@ int index = 0;
 
 //STD Values
 final int NO_VALUE = -200; //The value in the set representing no reading 
-final int[] DATA_COLUMNS = {6}; ////The columns from the data that we want to play 
+final int[] DATA_COLUMNS = {6, 3, 10}; ////The columns from the data that we want to play 
 final String DATASET = "AirQualityUCI.csv"; // Name of thje csv file
 final int MAX_VALUE = 2214;
 final int MIN_VALUE = 383;
@@ -100,43 +100,10 @@ void playSoundFOrAllColumns() {
     
       loadLineAndGenrateSound(DATA_COLUMNS[i]);
       //println(DATA_COLUMNS[i]);
-      wave.setWaveform(calcWaveForm(i));
-
+ 
       
     }
 }
-  
-  Wavetable calcWaveForm(int number) {
-    
-    
-    switch(number) {
-        case '1': 
-          return Waves.SINE;
-          break;
-         
-        case '2':
-          return Waves.TRIANGLE;
-          break;
-         
-        case '3':
-          return Waves.SAW;
-          break;
-        
-        case '4':
-          return Waves.SQUARE;
-          break;
-          
-        case '5':
-           return Waves.QUARTERPULSE;
-          break;
-         
-        default: return Waves.SINE; 
-    }
-    
-    return Waves.SINE
-    
-  }
-  
   
   void loadLineAndGenrateSound(int column) {
    
@@ -155,9 +122,9 @@ void playSoundFOrAllColumns() {
       println(datapoint);
       
       
-      float sound =  map(datanumber, 383, 2214, 10, 10000); 
+      float sound =  map(datanumber, 383, 2214, 10, 5000); 
     
-      //checkSoundSetVolume(datanumber);
+      checkSoundSetVolume(datanumber);
       
       wave.setFrequency(sound);
    
