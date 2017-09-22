@@ -1,16 +1,6 @@
 /**
-  * This sketch demonstrates how to create synthesized sound with Minim 
-  * using an AudioOutput and an Oscil. An Oscil is a UGen object, 
-  * one of many different types included with Minim. By using 
-  * the numbers 1 thru 5, you can change the waveform being used
-  * by the Oscil to make sound. These basic waveforms are the 
-  * basis of much audio synthesis. 
-  * 
-  * For many more examples of UGens included with Minim, 
-  * have a look in the Synthesis folder of the Minim examples.
-  * <p>
-  * For more information about Minim and additional features, 
-  * visit http://code.compartmental.net/minim/
+  * Code build as a demo for the multimodal course at Aarhus University
+  *Build from a demo of: http://code.compartmental.net/minim/
   */
 
 import ddf.minim.*;
@@ -19,6 +9,9 @@ import ddf.minim.ugens.*;
 Minim       minim;
 AudioOutput out;
 Oscil       wave;
+float volume = 0;
+
+
 
 //Textstuff
 String[] lines;
@@ -28,6 +21,12 @@ int index = 0;
 final int NO_VALUE = -200; //The value in the set representing no reading 
 final int[] DATA_COLUMNS = {6}; ////The columns from the data that we want to play 
 final String DATASET = "AirQualityUCI.csv"; // Name of thje csv file
+final int MAX_VALUE = 2214;
+final int MIN_VALUE = 383;
+final int UNCERTAIN = 800;
+
+
+
 
 void setup()
 {
@@ -43,7 +42,7 @@ void setup()
   // patch the Oscil to the output
   wave.patch( out );
   
-  frameRate(12);
+  frameRate(8); //tempo 12 fps - also 12 notes pr second
   lines = loadStrings(DATASET);
   
 }
@@ -57,6 +56,10 @@ void draw()
   loadDataAndGeneratePitch();
   generateGraphWindow();
 
+}
+
+void mousePressed() {
+  redraw();
 }
 
 void generateGraphWindow() {
@@ -97,15 +100,49 @@ void playSoundFOrAllColumns() {
     
       loadLineAndGenrateSound(DATA_COLUMNS[i]);
       //println(DATA_COLUMNS[i]);
+      wave.setWaveform(calcWaveForm(i));
+
       
     }
 }
+  
+  Wavetable calcWaveForm(int number) {
+    
+    
+    switch(number) {
+        case '1': 
+          return Waves.SINE;
+          break;
+         
+        case '2':
+          return Waves.TRIANGLE;
+          break;
+         
+        case '3':
+          return Waves.SAW;
+          break;
+        
+        case '4':
+          return Waves.SQUARE;
+          break;
+          
+        case '5':
+           return Waves.QUARTERPULSE;
+          break;
+         
+        default: return Waves.SINE; 
+    }
+    
+    return Waves.SINE
+    
+  }
+  
   
   void loadLineAndGenrateSound(int column) {
    
     String[] pieces = split(lines[index], ';');
     String datapoint = pieces[column];
-    
+        
     int datanumber = int(datapoint);
     
     if(datanumber == NO_VALUE) {
@@ -117,11 +154,32 @@ void playSoundFOrAllColumns() {
     
       println(datapoint);
       
+      
       float sound =  map(datanumber, 383, 2214, 10, 10000); 
     
+      //checkSoundSetVolume(datanumber);
+      
       wave.setFrequency(sound);
+   
+    
     
     }
+  }
+  
+  void checkSoundSetVolume(int value) {
+    if(value > MAX_VALUE - UNCERTAIN && value < MAX_VALUE + UNCERTAIN) {
+      
+      volume = 10;
+      println("DØDENS PEAK");
+      
+    } else {
+    
+      volume += 0.1;
+      
+    }
+        
+      wave.setAmplitude(volume); 
+    
   }
 
 /**void mouseMoved()
